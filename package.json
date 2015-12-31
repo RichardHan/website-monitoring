@@ -1,0 +1,28 @@
+{
+  "name": "medium-webchecker-app",
+  "version": "1.0.0",
+  "private": true,
+  "main": "app.js",
+  "directories": {
+    "test": "test",
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "mocha test/ping.js"    
+  },
+  "keywords": [ 
+    "monitor"
+  ],
+  "dependencies": {
+    "nodemailer": "^0.7.1"   
+  },
+  "devDependencies": {
+    "mocha": "~1.8.1",
+    "should": "~1.2.1"
+  },
+  "author": "Medium team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.10.x"
+  }
+}
