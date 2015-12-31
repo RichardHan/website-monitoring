@@ -1,8 +1,8 @@
 ## How it works
 
-1. git clone git@bitbucket.org:medium_git/webchecker.git
+1. git clone https://github.com/RichardHan/website-monitoring.git
 
-2. cd webchecker 
+2. cd website-monitoring 
 
 3. Modify config.json to decide email receiver.
 
