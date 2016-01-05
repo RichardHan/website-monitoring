@@ -24,3 +24,4 @@
 
 ## Dependencies
  - [nodemailer](https://github.com/andris9/Nodemailer) - for sending emails 
+ - [winston](https://github.com/winstonjs/winston) - for logging

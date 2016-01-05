@@ -1,6 +1,8 @@
 "use strict";
 var config = require('./config.json');
 var mailer = require('./mailer');
+var winston = require('winston');
+winston.add(winston.transports.File, { filename: config.logFile });
 
 /*
     Handles events emitted when a websites stop being monitored
@@ -9,19 +11,21 @@ var mailer = require('./mailer');
 */
 function onStop(website) {
     
+    var stopMessage = website + ' monitor has stopped';
+    winston.info(stopMessage);
+
     mailer({
         from: config.from,
         to: config.to,
-        subject: website + ' monitor has stopped',
+        subject: stopMessage,
         body: '<p>' + website + ' is no longer being minitored.</p>'
-    },
-
+    },    
     function (error, res) {
         if (error) {
-            console.log('Failed to send email. ' + error.message);
+            winston.error('Failed to send email. ' + error.message);
         }
         else {
-            console.log(res.message);
+            winston.info(res.message);            
         }
     });
 }
@@ -33,25 +37,27 @@ function onStop(website) {
 */
 function onDown(res) {
     
+    var downMessage = res.website + ' is down';
+    winston.error(downMessage);
+
     var msg = '';
     
     msg += '<p>Time: ' + res.time;
     msg += '</p><p>Website: ' + res.website;
-    msg += '</p><p>Message: ' + res.statusMessage + '</p>';
-    
+    msg += '</p><p>Message: ' + res.statusMessage + '</p>';    
+
     mailer({
         from: config.from,
         to: config.to,
-        subject: res.website + ' is down',
+        subject: downMessage,
         body: msg
     },
-
     function (error, res) {
         if (error) {
-            console.error('Failed to send email. ' + error.message);
+            winston.error('Failed to send email. ' + error.message);            
         }
         else {
-            console.log(res.message);
+            winston.info(res.message);            
         }
     });
 }
@@ -62,7 +68,7 @@ function onDown(res) {
     @param - (String) msg - response message
 */
 function onError(msg) {
-    console.log(msg);
+    winston.error(msg);
 }
 
 /*
@@ -71,7 +77,7 @@ function onError(msg) {
     @param - (String) msg - response message
 */
 function onUp(res) {
-    console.log(res.website + ' is up.');
+    winston.info(res.website + ' is up.');
 }
 
 module.exports.onStop = onStop;

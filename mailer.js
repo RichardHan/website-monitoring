@@ -2,6 +2,7 @@
    Module for sending emails
 */
 var nodemailer = require('nodemailer');
+var winston = require('winston');
 
 /*
     Mailer function
@@ -35,9 +36,9 @@ var mailer = function (opts, fn) {
         // send mail with defined transport object
         transporter.sendMail(mailOptions, function (error, response) {
             if (error) {
-                console.log(error);
+                winston.error(error);
             } else {
-                console.log("Message sent: " + response.message);
+                winston.info("Message sent: " + response.message);
             }
         // if you don't want to use this transport object anymore, uncomment following line
         //smtpTransport.close(); // shut down the connection pool, no more messages

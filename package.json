@@ -14,7 +14,8 @@
     "monitor"
   ],
   "dependencies": {
-    "nodemailer": "^0.7.1"   
+    "nodemailer": "^0.7.1",
+    "winston": "^2.1.1"
   },
   "devDependencies": {
     "mocha": "~1.8.1",
