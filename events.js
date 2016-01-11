@@ -1,8 +1,7 @@
 "use strict";
+var Logger = require('./lib/logger.js');
 var config = require('./config.json');
 var mailer = require('./mailer');
-var winston = require('winston');
-winston.add(winston.transports.File, { filename: config.logFile });
 
 /*
     Handles events emitted when a websites stop being monitored
@@ -10,22 +9,22 @@ winston.add(winston.transports.File, { filename: config.logFile });
     @param - (String) website - website url
 */
 function onStop(website) {
-    
+
     var stopMessage = website + ' monitor has stopped';
-    winston.info(stopMessage);
+    logger.info(stopMessage);
 
     mailer({
         from: config.from,
         to: config.to,
         subject: stopMessage,
         body: '<p>' + website + ' is no longer being minitored.</p>'
-    },    
+    },
     function (error, res) {
         if (error) {
-            winston.error('Failed to send email. ' + error.message);
+            Logger.error('Failed to send email. ' + error.message);
         }
         else {
-            winston.info(res.message);            
+            Logger.info(res.message);
         }
     });
 }
@@ -36,30 +35,32 @@ function onStop(website) {
     @param - (Object) res - response object return by the Node Monitor object
 */
 function onDown(res) {
-    
     var downMessage = res.website + ' is down';
-    winston.error(downMessage);
+    Logger.error(downMessage + ' status  message is ' + res.statusMessage, { website: res.website, responseTime: res.responseTime });
 
-    var msg = '';
-    
-    msg += '<p>Time: ' + res.time;
-    msg += '</p><p>Website: ' + res.website;
-    msg += '</p><p>Message: ' + res.statusMessage + '</p>';    
+    if (res.isEventNeedTrigger == true) {
+        Logger.error('send notify mail to ' + config.to, { website: res.website, responseTime: res.responseTime });
+        var msg = '';
 
-    mailer({
-        from: config.from,
-        to: config.to,
-        subject: downMessage,
-        body: msg
-    },
-    function (error, res) {
-        if (error) {
-            winston.error('Failed to send email. ' + error.message);            
-        }
-        else {
-            winston.info(res.message);            
-        }
-    });
+        msg += '<p>Time: ' + res.time;
+        msg += '</p><p>Website: ' + res.website;
+        msg += '</p><p>Message: ' + res.statusMessage + '</p>';
+
+        mailer({
+            from: config.from,
+            to: config.to,
+            subject: downMessage,
+            body: msg
+        },
+        function (error, res) {
+            if (error) {
+                Logger.error('Failed to send email. ' + error.message);
+            }
+            else {
+                Logger.info(res.message);
+            }
+        });
+    }
 }
 
 /*
@@ -68,7 +69,7 @@ function onDown(res) {
     @param - (String) msg - response message
 */
 function onError(msg) {
-    winston.error(msg);
+    Logger.error(msg);
 }
 
 /*
@@ -76,8 +77,8 @@ function onError(msg) {
 
     @param - (String) msg - response message
 */
-function onUp(res) {
-    winston.info(res.website + ' is up.');
+function onUp(res) {    
+    Logger.info(res.website + ' is up.', { website: res.website, responseTime: res.responseTime });
 }
 
 module.exports.onStop = onStop;
