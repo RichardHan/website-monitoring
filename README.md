@@ -24,3 +24,6 @@
 
 ## Dependencies
  - [nodemailer](https://github.com/andris9/Nodemailer) - for sending emails 
+ - [winston](https://github.com/winstonjs/winston) - for logging
+ - [fs-extra](https://github.com/jprichardson/node-fs-extra) - fs extention
+ - [moment](https://github.com/moment/moment/) - for dealing with time

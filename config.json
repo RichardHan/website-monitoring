@@ -1,4 +1,12 @@
-{  
+{
   "from": "test@gmail.com",
-  "to": "test1@gmail.com; test2@hotmail.com"
+  "to": "test1@gmail.com; test1@hotmail.com",
+  "sendMailInterval": 10,
+  "pingIntervalsInMinutes": 15,
+  "logFile": {
+    "name": "logs/Log.txt",
+    "maxSize": 5242880,
+    "applyDailyRotate": false
+  }
+
 }
