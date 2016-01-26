@@ -3,6 +3,7 @@
 */
 var nodemailer = require('nodemailer');
 var winston = require('winston');
+var mail_config = require('./mail_config.json');
 
 /*
     Mailer function
@@ -20,8 +21,8 @@ var mailer = function (opts, fn) {
         var transporter = nodemailer.createTransport("SMTP", {
             service: "Gmail",
             auth: {
-                user: "UseYourEmailAccount@gmail.com",
-                pass: "UseYourEmailPassword"
+                user: mail_config.gmail.user,
+                pass: mail_config.gmail.pass
             }
         });
         

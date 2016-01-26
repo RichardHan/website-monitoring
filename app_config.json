@@ -1,0 +1,10 @@
+{
+  "pingIntervalsInMinutes": 15,
+  "isEnableEmail": true,
+  "logFile": {
+    "name": "logs/Log.txt",
+    "maxSize": 5242880,
+    "applyDailyRotate": false  
+  },
+  "logLevel": "error"
+}

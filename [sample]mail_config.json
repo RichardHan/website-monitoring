@@ -1,0 +1,9 @@
+{
+  "provider": "gmail",
+  "gmail": {
+	"user": "UseYourGmailAccount@gmail.com",
+	"pass": "UseYourGmailPassword"
+  },
+  "from": "UseYourGmailAccount@gmail.com",
+  "to": "to1@gmail.com; to2@gmail.com; to3@gmail.com"
+}
