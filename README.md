@@ -4,7 +4,7 @@
 
 2.cd website-monitoring 
 
-3.Manually create `mail_config.json` (Mandatory),to decide Gmail account setting.
+3.(Mandatory) Manually create `mail_config.json` ,to decide Gmail account setting.
    **Note:** You need to choose SMTP provider. Please checkout [Node Mailer](https://github.com/andris9/Nodemailer) for more details.
 
 ```javascript
@@ -19,7 +19,7 @@
 }
 ```
 
-4.Manually create `websites.json` (Mandatory)
+4.(Mandatory) Manually create `websites.json` 
    List all websites that you want to monitor.
    The `interval` property is the polling interval in minutes.  
    The `bodyContain` property is the response match string in response body.
@@ -38,7 +38,7 @@
   }
 ]
 ```
-5.Modify app_config.json to decide app setting.(Optional)
+5.(Optional) Modify app_config.json to decide app setting.
 
 6.npm install
 
