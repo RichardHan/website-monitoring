@@ -9,7 +9,8 @@
    To decide Gmail account setting. 
 
    **Note:** You need to choose SMTP provider. Please checkout [Node Mailer](https://github.com/andris9/Nodemailer) for more details.
-
+   
+```javascript
 	{
 	  "provider": "gmail",
 	  "gmail": {
@@ -19,12 +20,14 @@
 	  "from": "UseYourGmailAccount@gmail.com",
 	  "to": "to1@gmail.com; to2@gmail.com; to3@gmail.com"
 	}
+```
 
 4. Manually create `websites.json` (Mandatory)
    List all websites that you want to monitor.
    The `interval` property is the polling interval in minutes.  
    The `bodyContain` property is the response match string in response body.
 
+```javascript
 	[
 	  {
 		"url": "https://www.google.com.tw/",
@@ -37,6 +40,7 @@
 		"bodyContain": "html"
 	  }
 	]
+```
 
 5  Modify app_config.json to decide app setting. (Optional )
 
