@@ -2,11 +2,11 @@
   {
     "url": "https://www.google.com.tw/",
     "interval": "1",
-    "bodyContain": "html"
+    "bodyContain": "<html>"
   },
   {
     "url": "https://tw.yahoo.com/",
     "interval": "1",
-    "bodyContain": "html"
+    "bodyContain": "<html>"
   }
 ]

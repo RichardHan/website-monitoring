@@ -3,6 +3,7 @@ var Logger = require('./lib/logger.js');
 var mail_config = require('./mail_config.json');
 var mailer = require('./mailer');
 var moment = require('moment');
+var isSendEmailStatus = {};
 
 /*
     Handles events emitted when a websites stop being monitored
@@ -10,24 +11,12 @@ var moment = require('moment');
     @param - (String) website - website url
 */
 function onStop(website) {
-    
     var stopMessage = website + ' monitor has stopped';
     logger.info(stopMessage);
-    
-    mailer({
-        from: mail_config.from,
-        to: mail_config.to,
-        subject: stopMessage,
-        body: '<p>' + website + ' is no longer being minitored.</p>'
-    },
-    function (error, res) {
-        if (error) {
-            Logger.error('Failed to send email. ' + error.message);
-        }
-        else {
-            Logger.info(res.message);
-        }
-    });
+    if (res.isEnableEmail == true && !isSendEmailStatus[res.website] === true) {
+        isSendEmailStatus[website] = true;
+        sendByMailer(stopMessage, '<p>' + website + ' is no longer being minitored.</p>');
+    }
 }
 
 /*
@@ -37,11 +26,29 @@ function onStop(website) {
 */
 function onDown(res) {
     var downMessage = res.website + ' is down.';
+    Logger.error(downMessage + "(" + res.responseTime + " ms)" + ' Reason: ' + res.statusMessage);
+    if (res.isEnableEmail == true && !isSendEmailStatus[res.website] === true) {
+        isSendEmailStatus[res.website] = true;
+        Logger.info('[isEnableEmail = true] , Send email to ' + mail_config.to);
+        var msg = '';
+        msg += '<p>Time: ' + res.time;
+        msg += '</p><p>Website: ' + res.website;
+        msg += '</p><p>Message: ' + res.statusMessage + '</p>';
+        sendByMailer(downMessage, msg);
+    }
+}
+
+/*
+    Handles events emitted when aa error occurs
+
+    @param - (Object) res - response object return by the Node Monitor object
+*/
+function onError(res) {
+    var downMessage = res.website + ' an error has occurs.';
+    Logger.error(downMessage + ' HTTP Messages:' + res.statusMessage);
     
-    Logger.error(moment().format() + " " + downMessage 
-        + " (" + res.responseTime + " ms)" + ' Message:' + res.statusMessage);    
-    
-    if (res.isEnableEmail == true) {
+    if (res.isEnableEmail == true && !isSendEmailStatus[res.website] === true) {
+        isSendEmailStatus[res.website] = true;
         Logger.info('[isEnableEmail = true] , Send email to ' + mail_config.to);
         var msg = '';
         
@@ -49,39 +56,45 @@ function onDown(res) {
         msg += '</p><p>Website: ' + res.website;
         msg += '</p><p>Message: ' + res.statusMessage + '</p>';
         
-        mailer({
-            from: mail_config.from,
-            to: mail_config.to,
-            subject: downMessage,
-            body: msg
-        },
-        function (error, res) {
-            if (error) {
-                Logger.error('Failed to send email. ' + error.message);
-            }
-            else {
-                Logger.info(res.message);
-            }
-        });
+        sendByMailer(downMessage, msg);
     }
 }
 
 /*
     Handles events emitted when aa error occurs
 
-    @param - (String) msg - response message
+    @param - (Object) res - response object return by the Node Monitor object
 */
-function onError(msg) {
-    Logger.error(msg);
+function onUp(res) {
+    if (res.isEnableEmail == true && isSendEmailStatus[res.website] === true) {
+        var msg = '';
+        msg += '<p>Time: ' + res.time;
+        msg += '</p><p>Website: ' + res.website;
+        msg += '</p><p>Message: ' + "The service is working properly." + '</p>';
+        sendByMailer(res.website + " service has recovered." , msg);
+    }
+    isSendEmailStatus[res.website] = false;
+    Logger.info(res.website + ' is up.', "(" + res.responseTime + " ms)");
 }
 
 /*
-    Handles events emitted when aa error occurs
-
-    @param - (String) msg - response message
-*/
-function onUp(res) {    
-    Logger.info(moment().format() + ' ' + res.website + ' is up.', "(" + res.responseTime + " ms)");    
+ *  Handlers send email behavior.
+ */
+function sendByMailer(subjectStr, bodyStr) {
+    mailer({
+        from: mail_config.from,
+        to: mail_config.to,
+        subject: subjectStr,
+        body: bodyStr
+    },
+    function (error, res) {
+        if (error) {
+            Logger.error('Failed to send email. ' + error.message);
+        }
+        else {
+            Logger.info(res.message);
+        }
+    });
 }
 
 module.exports.onStop = onStop;
